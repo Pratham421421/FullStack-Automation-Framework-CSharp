@@ -54,25 +54,23 @@ pipeline {
     }
 
     post {
-        always {
-            node {
-                script {
-                    def trxFilePath = "${env.TEST_RESULTS_DIR}/testResults.trx"
-                    if (fileExists(trxFilePath)) {
-                        def results = parseTrx(trxFilePath)
-                        emailext(
-                            subject: "Automation Test Results - ${currentBuild.fullDisplayName}",
-                            to: "${params.EmailToReport}",
-                            body: emailBody(results),
-                            mimeType: 'text/html'
-                        )
-                    } else {
-                        echo "TRX result file not found at ${trxFilePath}"
-                    }
-                }
+    always {
+        script {
+            def trxFilePath = "${env.TEST_RESULTS_DIR}/testResults.trx"
+            if (fileExists(trxFilePath)) {
+                def results = parseTrx(trxFilePath)
+                emailext(
+                    subject: "Automation Test Results - ${currentBuild.fullDisplayName}",
+                    to: "${params.EmailToReport}",
+                    body: emailBody(results),
+                    mimeType: 'text/html'
+                )
+            } else {
+                echo "TRX result file not found at ${trxFilePath}"
             }
         }
     }
+}
 }
 
 def parseTrx(String path) {
