@@ -9,8 +9,6 @@ namespace DemoBlaze.e2e.Framework.Pages
     {
         string baseUrl = ConfigHelper.Get("BaseUrl");
         //string baseUrl = "https://www.demoblaze.com/";
-        private string Username = "DemoblazeAutomation";
-        private string Password = "DemoblazeAutomation@123";
 
         //PageElements
         private readonly By LoginLinkEle = By.CssSelector("[data-target='#logInModal']");
@@ -19,14 +17,14 @@ namespace DemoBlaze.e2e.Framework.Pages
         private readonly By LogInButtonEle = By.CssSelector("[onclick='logIn()']");
         private readonly By NameOfUserNavLinkEle = By.CssSelector("[id='nameofuser']");
 
-        public void LoginToApp()
+        public void LoginToApp(string user , string password)
         {          
             BrowserUtilities.GoToUrl(baseUrl);
             Click(LoginLinkEle);
-            SendKeys(UsernameTextBoxEle, Username);
-            SendKeys(PasswordTextBoxEle, Password);
+            SendKeys(UsernameTextBoxEle, user);
+            SendKeys(PasswordTextBoxEle, password);
             Click(LogInButtonEle);
-            Assert.That(GetText(NameOfUserNavLinkEle), Is.EqualTo($"Welcome {Username}"), "User not Logged In");
+            Assert.That(GetText(NameOfUserNavLinkEle), Is.EqualTo($"Welcome {user}"), "User not Logged In");
         }
     }
 }
