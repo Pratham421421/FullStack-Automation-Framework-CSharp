@@ -1,0 +1,97 @@
+pipeline {
+    agent any
+
+    tools {
+        dotnet 'dotnet8'
+    }
+
+    environment {
+        TEST_PROJECT = 'DemoBlaze.e2e/DemoBlaze.e2e.csproj'
+        TEST_RESULTS_DIR = 'TestResults'
+    }
+
+    parameters {
+        choice(name: 'Browser', choices: ['Chrome', 'Firefox'], description: 'Browser to run tests against')
+        choice(name: 'Env', choices: ['QA', 'Stage', 'Prod'], description: 'Target environment')
+        string(name: 'TestFilterQuery', defaultValue: '', description: 'Optional filter (e.g., FullyQualifiedName~LoginTests)')
+        string(name: 'EmailToReport', defaultValue: 'your.email@domain.com', description: 'Email to notify after build')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/PrathameshHarad/FullStack-Automation-Framework-CSharp.git'
+            }
+        }
+
+        stage('Restore') {
+            steps {
+                bat 'dotnet restore'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                bat 'dotnet build --configuration Release'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    def filterArg = params.TestFilterQuery ? "--filter \"${params.TestFilterQuery}\"" : ""
+                    bat "dotnet test ${env.TEST_PROJECT} --logger:\"trx\" --results-directory ${env.TEST_RESULTS_DIR} ${filterArg}"
+                }
+            }
+        }
+
+        stage('Archive Results') {
+            steps {
+                junit allowEmptyResults: true, testResults: "${env.TEST_RESULTS_DIR}/*.trx"
+                archiveArtifacts artifacts: "${env.TEST_RESULTS_DIR}/*.trx", allowEmptyArchive: true
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                def trxFilePath = "${env.TEST_RESULTS_DIR}/testResults.trx"
+                def results = parseTrx(trxFilePath)
+                emailext(
+                    subject: "Automation Test Results - ${currentBuild.fullDisplayName}",
+                    to: "${params.EmailToReport}",
+                    body: emailBody(results),
+                    mimeType: 'text/html'
+                )
+            }
+        }
+    }
+}
+
+def parseTrx(String path) {
+    def trx = readFile(path)
+    def executed = (trx =~ /executed="(\d+)"/)[0][1] as Integer
+    def passed = (trx =~ /passed="(\d+)"/)[0][1] as Integer
+    def failed = (trx =~ /failed="(\d+)"/)[0][1] as Integer
+    def skipped = (trx =~ /notExecuted="(\d+)"/)[0][1] as Integer
+    return [executed: executed, passed: passed, failed: failed, skipped: skipped]
+}
+
+def emailBody(results) {
+    return """
+    <html><body>
+    <h2>Test Summary</h2>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr><th>Total</th><th>Passed</th><th>Failed</th><th>Skipped</th></tr>
+        <tr>
+            <td>${results.executed}</td>
+            <td style="color:green">${results.passed}</td>
+            <td style="color:red">${results.failed}</td>
+            <td style="color:orange">${results.skipped}</td>
+        </tr>
+    </table>
+    <p>Build: <a href='${env.BUILD_URL}'>${env.JOB_NAME} #${env.BUILD_NUMBER}</a></p>
+    </body></html>
+    """
+}
