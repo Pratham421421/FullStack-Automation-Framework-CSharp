@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        TEST_PROJECT = 'DemoBlaze.e2e/DemoBlaze.e2e.csproj'
+        TEST_PROJECT = 'DemoBlaze.e2e.csproj'
         TEST_RESULTS_DIR = 'TestResults'
         TRX_FILE = 'testResults.trx'
     }
