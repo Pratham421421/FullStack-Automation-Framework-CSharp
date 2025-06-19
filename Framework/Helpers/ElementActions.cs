@@ -7,7 +7,7 @@ using Expected = SeleniumExtras.WaitHelpers.ExpectedConditions;
 
 namespace DemoBlaze.e2e.Framework.Helpers
 {
-    public class WaitUtilities : BaseUtilities
+    public class ElementActions : BaseUtilities
     {
         private const int TimeoutInSeconds = Constants.MinimumWaitS;
 
@@ -19,6 +19,20 @@ namespace DemoBlaze.e2e.Framework.Helpers
                 IWebElement element = wait.Until(ExpectedConditions.ElementToBeClickable(selector));
                 element.Click();
             }
+        }
+
+        public static void SendKeys(By selector, string value, int timeoutInSeconds = TimeoutInSeconds)
+        {
+            WebDriverWait wait = new WebDriverWait(GetWebDriver(), TimeSpan.FromSeconds(timeoutInSeconds));
+            IWebElement element = wait.Until(ExpectedConditions.ElementToBeClickable(selector));
+            element.SendKeys(value);
+        }
+
+        public static string GetText(By selector)
+        {
+            WebDriverWait wait = new WebDriverWait(GetWebDriver(), TimeSpan.FromSeconds(TimeoutInSeconds));
+            IWebElement element = wait.Until(ExpectedConditions.ElementIsVisible(selector));
+            return element.Text.Trim();
         }
     }
 }

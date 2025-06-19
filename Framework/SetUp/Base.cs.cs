@@ -1,4 +1,4 @@
-﻿using DemoBlaze.e2e.Framework.Controls;
+﻿using DemoBlaze.e2e.Framework.Helpers;
 using DemoBlaze.e2e.Framework.Pages;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Engine.ClientProtocol;
 using OpenQA.Selenium;
@@ -11,14 +11,14 @@ namespace DemoBlaze.e2e.Framework.SetUp
     {
         protected WebDriver WebDriver;
         public static IWebDriver Driver;
-        protected BasePage App;
+        protected BaseFactory App;
 
         [SetUp]
         public void BeforeEach()
         {
             WebDriver = new WebDriver();
             Driver = WebDriver.Driver;
-            App = new BasePage();
+            App = new BaseFactory();
         }
 
         [TearDown]

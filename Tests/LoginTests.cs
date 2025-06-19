@@ -1,8 +1,5 @@
-using DemoBlaze.e2e.Framework.Controls;
-using DemoBlaze.e2e.Framework.Helpers;
-using DemoBlaze.e2e.Framework.Pages;
 using DemoBlaze.e2e.Framework.SetUp;
-using OpenQA.Selenium.Chrome;
+
 
 namespace DemoBlaze.e2e.Tests
 {
@@ -10,10 +7,9 @@ namespace DemoBlaze.e2e.Tests
     {
 
         [Test]
-        public void Test1()
+        public void LoginWithValidCredentials()
         {
             App.LoginPage.LoginToApp();
-            Thread.Sleep(50000);
         }
     }
 }

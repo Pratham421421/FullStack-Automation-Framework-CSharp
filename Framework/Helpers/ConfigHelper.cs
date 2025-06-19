@@ -14,9 +14,9 @@ namespace DemoBlaze.e2e.Framework.Helpers
         static ConfigHelper()
         {
             config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory()) // gets bin/debug/net8.0 folder
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .Build();
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsetting.json", optional: false, reloadOnChange: true)
+            .Build();
         }
 
         public static string Get(string key)
