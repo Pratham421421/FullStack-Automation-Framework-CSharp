@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        dotnetsdk 'dotnet8'
-    }
-
     environment {
         TEST_PROJECT = 'DemoBlaze.e2e/DemoBlaze.e2e.csproj'
         TEST_RESULTS_DIR = 'TestResults'
