@@ -1,17 +1,19 @@
+using DemoBlaze.e2e.Framework.Controls;
 using DemoBlaze.e2e.Framework.Helpers;
+using DemoBlaze.e2e.Framework.Pages;
 using DemoBlaze.e2e.Framework.SetUp;
 using OpenQA.Selenium.Chrome;
 
 namespace DemoBlaze.e2e.Tests
 {
-    public class Tests : Base
+    public class LoginTests : Base
     {
 
         [Test]
         public void Test1()
         {
-            BrowserUtilities.GoToUrl("https://www.google.com");
-            Thread.Sleep(5000);
+            App.LoginPage.LoginToApp();
+            Thread.Sleep(50000);
         }
     }
 }
