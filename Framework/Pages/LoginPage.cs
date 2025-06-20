@@ -1,4 +1,5 @@
-﻿using DemoBlaze.e2e.Framework.Helpers;
+﻿using DemoBlaze.e2e.Framework.Data;
+using DemoBlaze.e2e.Framework.Helpers;
 using OpenQA.Selenium;
 using System.Configuration;
 using static System.Net.WebRequestMethods;
@@ -7,9 +8,6 @@ namespace DemoBlaze.e2e.Framework.Pages
 {
     public class LoginPage : ElementActions
     {
-        string baseUrl = ConfigHelper.Get("BaseUrl");
-        //string baseUrl = "https://www.demoblaze.com/";
-
         //PageElements
         private readonly By LoginLinkEle = By.CssSelector("[data-target='#logInModal']");
         private readonly By UsernameTextBoxEle = By.CssSelector("[id='loginusername']");
@@ -19,7 +17,7 @@ namespace DemoBlaze.e2e.Framework.Pages
 
         public void LoginToApp(string user , string password)
         {          
-            BrowserUtilities.GoToUrl(baseUrl);
+            BrowserUtilities.GoToUrl(FrameworkConfigurations.BaseUrl);
             Click(LoginLinkEle);
             SendKeys(UsernameTextBoxEle, user);
             SendKeys(PasswordTextBoxEle, password);

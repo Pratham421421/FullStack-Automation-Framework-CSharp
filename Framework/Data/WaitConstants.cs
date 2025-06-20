@@ -1,7 +1,7 @@
 ﻿
 namespace DemoBlaze.e2e.Framework.Data
 {
-    public class Constants
+    public class WaitConstants
     {
         public const int MiniWaitS = 5;
         public const int MinimumWaitS = 10;

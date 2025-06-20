@@ -9,7 +9,7 @@ namespace DemoBlaze.e2e.Framework.Helpers
 {
     public class ElementActions : BaseUtilities
     {
-        private const int TimeoutInSeconds = Constants.MinimumWaitS;
+        private const int TimeoutInSeconds = WaitConstants.MinimumWaitS;
 
         public static void Click(By selector, int timeoutInSeconds = TimeoutInSeconds)
         {
