@@ -1,13 +1,10 @@
 pipeline {
     agent any
 
-    tools {
-        dotnetsdk 'dotnet8'
-    }
-
     environment {
-        TEST_PROJECT = 'DemoBlaze.e2e/DemoBlaze.e2e.csproj'
+        TEST_PROJECT = 'DemoBlaze.e2e.csproj'
         TEST_RESULTS_DIR = 'TestResults'
+        TRX_FILE = 'testResults.trx'
     }
 
     parameters {
@@ -20,7 +17,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/PrathameshHarad/FullStack-Automation-Framework-CSharp.git'
+                git branch: 'main', url: 'https://github.com/PrathameshHarad/FullStack-Automation-Framework-CSharp.git'
             }
         }
 
@@ -40,7 +37,7 @@ pipeline {
             steps {
                 script {
                     def filterArg = params.TestFilterQuery ? "--filter \"${params.TestFilterQuery}\"" : ""
-                    bat "dotnet test ${env.TEST_PROJECT} --logger \"trx;LogFileName=testResults.trx\" --results-directory ${env.TEST_RESULTS_DIR} ${filterArg}"
+                    bat "dotnet test ${env.TEST_PROJECT} --logger \"trx;LogFileName=${env.TRX_FILE}\" --results-directory ${env.TEST_RESULTS_DIR} ${filterArg}"
                 }
             }
         }
@@ -54,23 +51,23 @@ pipeline {
     }
 
     post {
-    always {
-        script {
-            def trxFilePath = "${env.TEST_RESULTS_DIR}/testResults.trx"
-            if (fileExists(trxFilePath)) {
-                def results = parseTrx(trxFilePath)
-                emailext(
-                    subject: "Automation Test Results - ${currentBuild.fullDisplayName}",
-                    to: "${params.EmailToReport}",
-                    body: emailBody(results),
-                    mimeType: 'text/html'
-                )
-            } else {
-                echo "TRX result file not found at ${trxFilePath}"
+        always {
+            script {
+                def trxPath = "${env.TEST_RESULTS_DIR}/${env.TRX_FILE}"
+                if (fileExists(trxPath)) {
+                    def results = parseTrx(trxPath)
+                    emailext(
+                        subject: "Automation Test Results - ${currentBuild.fullDisplayName}",
+                        to: "${params.EmailToReport}",
+                        body: emailBody(results),
+                        mimeType: 'text/html'
+                    )
+                } else {
+                    echo "TRX result file not found at ${trxPath}"
+                }
             }
         }
     }
-}
 }
 
 def parseTrx(String path) {

@@ -1,5 +1,5 @@
 {
   "BaseUrl": "https://www.demoblaze.com/",
-  "Browser": "edge",
+  "Browser": "chrome",
   "Environment": "QA"
 }
